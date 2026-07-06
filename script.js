@@ -1,14 +1,91 @@
-const $ = (s, root=document) => root.querySelector(s);
-const $$ = (s, root=document) => [...root.querySelectorAll(s)];
-const header = $('.site-header');
-const menu = $('.menu-toggle');
-const links = $('.nav-links');
-if(menu && links){ menu.addEventListener('click',()=>{ const open=links.classList.toggle('open'); menu.setAttribute('aria-expanded', open); }); $$('.nav-links a').forEach(a=>a.addEventListener('click',()=>links.classList.remove('open'))); }
-const observer = new IntersectionObserver(entries=>{ entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); observer.unobserve(e.target); } }); },{threshold:.15});
-$$('.reveal').forEach(el=>observer.observe(el));
-window.addEventListener('scroll',()=>{ if(header) header.classList.toggle('scrolled', window.scrollY>30); });
-$$('[data-count]').forEach(el=>{ const target=Number(el.dataset.count); let current=0; const step=Math.max(1, Math.ceil(target/40)); const run=()=>{ current=Math.min(target,current+step); el.textContent=current + (el.dataset.suffix||''); if(current<target) requestAnimationFrame(run); }; const io=new IntersectionObserver(es=>{ if(es[0].isIntersecting){run(); io.disconnect();}}, {threshold:.5}); io.observe(el); });
-const themeBtn = $('.theme-toggle');
-if(themeBtn){ const key='portfolio-theme-'+document.body.dataset.person; const saved=localStorage.getItem(key); if(saved) document.documentElement.dataset.theme=saved; themeBtn.addEventListener('click',()=>{ const next=document.documentElement.dataset.theme==='light'?'dark':'light'; document.documentElement.dataset.theme=next; localStorage.setItem(key,next); }); }
+const $ = (selector, root = document) => root.querySelector(selector);
+const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
-const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear();
+const header = $(".site-header");
+const menu = $(".menu-toggle");
+const links = $(".nav-links");
+const themeBtn = $(".theme-toggle");
+const year = $("#year");
+
+if (menu && links) {
+  menu.addEventListener("click", () => {
+    const isOpen = links.classList.toggle("open");
+    menu.setAttribute("aria-expanded", String(isOpen));
+  });
+
+  $$(".nav-links a").forEach((link) => {
+    link.addEventListener("click", () => {
+      links.classList.remove("open");
+      menu.setAttribute("aria-expanded", "false");
+    });
+  });
+}
+
+const revealObserver = "IntersectionObserver" in window
+  ? new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 })
+  : null;
+
+$$(".reveal").forEach((element) => {
+  if (revealObserver) {
+    revealObserver.observe(element);
+  } else {
+    element.classList.add("visible");
+  }
+});
+
+window.addEventListener("scroll", () => {
+  if (header) {
+    header.classList.toggle("scrolled", window.scrollY > 30);
+  }
+});
+
+$$("[data-count]").forEach((element) => {
+  const target = Number(element.dataset.count || "0");
+  const suffix = element.dataset.suffix || "";
+  let current = 0;
+  const step = Math.max(1, Math.ceil(target / 40));
+
+  const run = () => {
+    current = Math.min(target, current + step);
+    element.textContent = `${current}${suffix}`;
+    if (current < target) requestAnimationFrame(run);
+  };
+
+  if ("IntersectionObserver" in window) {
+    const countObserver = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        run();
+        countObserver.disconnect();
+      }
+    }, { threshold: 0.5 });
+    countObserver.observe(element);
+  } else {
+    run();
+  }
+});
+
+if (themeBtn) {
+  const key = `portfolio-theme-${document.body.dataset.person || "default"}`;
+  const savedTheme = localStorage.getItem(key);
+
+  if (savedTheme) {
+    document.documentElement.dataset.theme = savedTheme;
+  }
+
+  themeBtn.addEventListener("click", () => {
+    const nextTheme = document.documentElement.dataset.theme === "light" ? "dark" : "light";
+    document.documentElement.dataset.theme = nextTheme;
+    localStorage.setItem(key, nextTheme);
+  });
+}
+
+if (year) {
+  year.textContent = new Date().getFullYear();
+}

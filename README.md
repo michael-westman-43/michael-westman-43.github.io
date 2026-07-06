@@ -1,13 +1,23 @@
-# michael-westman-43.github.io-main V2 Portfolio
+# Jaco van der Merwe Portfolio
 
-A polished responsive V2 portfolio with:
+A polished, responsive executive portfolio for Jaco van der Merwe, National Parts Manager.
 
-- Unique industry-matched visual direction
+## Included
+
+- Clean single-page HTML structure
+- One active stylesheet: `style.css`
+- Compatibility stylesheet: `styles.css`
 - Responsive mobile navigation
+- Dark/light theme toggle with local storage
 - Scroll reveal animations
-- Theme toggle with local storage
-- SVG favicon
-- Improved SEO/OpenGraph metadata
-- Download links for existing CV assets where available
+- Animated statistics
+- SEO/OpenGraph metadata
+- Download link for `cv/JACO VAN DER MERWE.docx`
 
-Open `index.html` locally to test.
+## Local Testing
+
+Open `index.html` in a browser.
+
+## GitHub Pages
+
+This repository is ready for GitHub Pages from the `main` branch and root folder.
